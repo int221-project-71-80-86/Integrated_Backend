@@ -6,17 +6,31 @@
 
 package int221.project.models;
 
+import java.io.Serializable;
+
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 @Entity
-public class Productcolors 
+//@IdClass(ProductColorsId.class)
+public class Productcolors
 {
-	@Id
-    private String     productcode  ; // Id or Primary Key
-	@Id
-    private int        colorid      ; // Id or Primary Key
+	@Id private String productcode ; // Id or Primary Key
+    private int colorid ; // Id or Primary Key
+	
+//	@EmbeddedId
+//	private ProductColorsId productColors;
 
+//	public ProductColorsId getProductColors() {
+//		return productColors;
+//	}
+
+//	public void setProductColors(ProductColorsId id) {
+//		this.productColors = id;
+//	}
+	
 	public void setProductcode( String productcode ) {
         this.productcode = productcode ;
     }
