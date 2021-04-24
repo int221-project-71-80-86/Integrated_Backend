@@ -14,6 +14,7 @@ public class Productcolors
 {
 	@Id
     private String     productcode  ; // Id or Primary Key
+	@Id
     private int        colorid      ; // Id or Primary Key
 
 	public void setProductcode( String productcode ) {
