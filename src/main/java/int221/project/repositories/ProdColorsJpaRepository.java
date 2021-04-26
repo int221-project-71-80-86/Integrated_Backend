@@ -2,7 +2,10 @@ package int221.project.repositories;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import int221.project.models.Colors;
@@ -17,5 +20,9 @@ public interface ProdColorsJpaRepository extends JpaRepository<Productcolors, St
 	@Query("SELECT pc.colorid FROM Productcolors pc WHERE productcode = ?1")
 	List<Integer> findColorsByProductCode(String productCode);
 
+	@Transactional
+	@Modifying
+	@Query("DELETE FROM Productcolors pc WHERE productcode = ?1")
+	void deleteProductByProductcode(String productCode);
 	
 }
