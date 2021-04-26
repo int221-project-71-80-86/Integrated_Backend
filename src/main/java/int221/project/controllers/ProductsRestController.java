@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import int221.project.exceptions.DataRelatedException;
@@ -46,11 +47,7 @@ public class ProductsRestController {
     }
     
     // Not yet implemented //
-//    @PostMapping
-//    public Products addProducts() {
-//    	return null
-//    }
-//    
+
 //    @PutMapping
 //    public Products updateProducts() {
 //    	return null
@@ -115,7 +112,21 @@ public class ProductsRestController {
     	return pfs;
     }
     
-    
+    @PostMapping("/add")
+    public List<Colors> addProducts(@RequestBody ProductsForShow pfs) {
+    	if(prodRepo.findById(pfs.getProduct().getProductcode()).orElse(null) != null) {
+    		throw new DataRelatedException(ERROR_CODE.PRODUCT_ALREADY_EXIST, "Product with code: "+pfs.getProduct().getProductcode()+" is already exists.");
+    	}
+    	prodRepo.save(pfs.getProduct());
+    	ListIterator<Colors> iter = pfs.getColors().listIterator();
+    	while(iter.hasNext()) {
+    		Productcolors temp = new Productcolors();
+    		temp.setProductcode(pfs.getProduct().getProductcode());
+    		temp.setColorid(iter.next().getColorid());
+    		pcRepo.save(temp);
+    	}
+    	return pfs.getColors();
+    }
     
 }
     

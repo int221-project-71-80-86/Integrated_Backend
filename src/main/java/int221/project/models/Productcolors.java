@@ -14,12 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 
 @Entity
-//@IdClass(ProductColorsId.class)
+@IdClass(ProductColorsId.class)
 public class Productcolors
 {
 	@Id private String productcode ; // Id or Primary Key
-    private int colorid ; // Id or Primary Key
-	
+    @Id private int colorid ; // Id or Primary Key
+
 //	@EmbeddedId
 //	private ProductColorsId productColors;
 
