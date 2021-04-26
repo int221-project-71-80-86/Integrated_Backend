@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import int221.project.exceptions.DataRelatedException;
+import int221.project.exceptions.ExceptionResponse.ERROR_CODE;
 import int221.project.models.*;
 import int221.project.repositories.BrandsJpaRepositories;
 import int221.project.repositories.ColorsJpaRepositories;
@@ -31,7 +33,11 @@ public class ProductsRestController {
 	// Test Mapping //
     @GetMapping("/products/{code}")
     public Products show(@PathVariable String code) {
-        return prodRepo.findById(code).orElse(null);
+    	Products p = prodRepo.findById(code).orElse(null);
+    	if(p == null) {
+    		throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND, "Product code: '"+code+"' does not exist.");
+    	}
+        return p;
     }
     
     @GetMapping("/products")
@@ -77,15 +83,23 @@ public class ProductsRestController {
     }
     
     public ProductsForShow getProductForShow(String productcode) {
-    	List<Integer> colorsId = pcRepo.findColorsByProductCode(productcode);
     	Products product = prodRepo.findById(productcode).orElse(null);
+    	if(product == null) {
+    		throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND, "Product code: '"+productcode+"' does not exist.");
+    	} 
+    	List<Integer> colorsId = pcRepo.findColorsByProductCode(productcode);
+    	
     	List<Colors> colors = new ArrayList<>();
     	for (Iterator<Integer> i = colorsId.iterator(); i.hasNext();) {
 			Colors temp = colorRepo.findById((Integer)i.next()).orElse(null);
-			//Exception Check here
+			if (temp == null) {
+	    		throw new DataRelatedException(ERROR_CODE.COLOR_DOESNT_FOUND, "Does not find the color "+temp.getName()+".");
+	    	}
 			colors.add(temp);
 		}
-    	// Exception Check Here
+    	if(colors.size() < 1) {
+    		throw new DataRelatedException(ERROR_CODE.NOT_HAVE_ANY_COLORS, "Does not find any colors for the product code: "+productcode);
+    	}
     	ProductsForShow pfs = new ProductsForShow(product, colors);
     	return pfs;
     }
