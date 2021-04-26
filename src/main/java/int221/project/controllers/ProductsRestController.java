@@ -52,11 +52,7 @@ public class ProductsRestController {
 //    public Products updateProducts() {
 //    	return null
 //    }
-//    
-//    @DeleteMapping
-//    public Products removeProducts() {
-//    	return null
-//    }
+
     
     @GetMapping("/brands")
     public List<Brands> getBrands() {
@@ -127,6 +123,14 @@ public class ProductsRestController {
     	}
     	return pfs.getColors();
     }
+    
+  
+  @DeleteMapping("/delete/{productcode}")
+  public Products removeProducts(@PathVariable String productcode) {
+	  pcRepo.deleteProductByProductcode(productcode);
+	  prodRepo.deleteById(productcode);
+	  return prodRepo.findById(productcode).orElse(null);
+  }
     
 }
     
