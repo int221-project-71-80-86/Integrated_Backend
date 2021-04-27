@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import int221.project.exceptions.DataRelatedException;
 import int221.project.exceptions.ExceptionResponse.ERROR_CODE;
 import int221.project.models.*;
-import int221.project.repositories.BrandsJpaRepositories;
-import int221.project.repositories.ColorsJpaRepositories;
-import int221.project.repositories.ProdColorsJpaRepository;
-import int221.project.repositories.ProductsJpaRepository;
+import int221.project.repositories.*;
 
 
 @RestController
@@ -46,14 +43,6 @@ public class ProductsRestController {
     	return prodRepo.findAll();
     }
     
-    // Not yet implemented //
-
-//    @PutMapping
-//    public Products updateProducts() {
-//    	return null
-//    }
-
-    
     @GetMapping("/brands")
     public List<Brands> getBrands() {
     	return brandRepo.findAll();
@@ -63,12 +52,6 @@ public class ProductsRestController {
     public List<Colors> getColors() {
     	return colorRepo.findAll();
     }
-    
-//    @GetMapping("/colorss/{product}")
-//    public Ob getColorss(@PathVariable String product) {
-//    	return pcRepo.findColorsByProductCode(product);
-//    }
-//    
     
     @GetMapping("/productcolors/{productcode}")
     public ProductsForShow getProducts(@PathVariable String productcode) {
@@ -108,20 +91,36 @@ public class ProductsRestController {
     	return pfs;
     }
     
-    @PostMapping("/add")
-    public List<Colors> addProducts(@RequestBody ProductsForShow pfs) {
-    	if(prodRepo.findById(pfs.getProduct().getProductcode()).orElse(null) != null) {
-    		throw new DataRelatedException(ERROR_CODE.PRODUCT_ALREADY_EXIST, "Product with code: "+pfs.getProduct().getProductcode()+" is already exists.");
+    public void saveProducts(ProductsForShow pfs) {    	
+    	ListIterator<Colors> iter = pfs.getColors().listIterator();
+    	if(!iter.hasNext()) {
+    		throw new DataRelatedException(ERROR_CODE.NOT_HAVE_ANY_COLORS, "Adding product with at least 1 colors.");
     	}
     	prodRepo.save(pfs.getProduct());
-    	ListIterator<Colors> iter = pfs.getColors().listIterator();
     	while(iter.hasNext()) {
     		Productcolors temp = new Productcolors();
     		temp.setProductcode(pfs.getProduct().getProductcode());
     		temp.setColorid(iter.next().getColorid());
     		pcRepo.save(temp);
     	}
-    	return pfs.getColors();
+    }
+    
+    @PostMapping("/save")
+    public ProductsForShow addProducts(@RequestBody ProductsForShow pfs) {
+    	if(prodRepo.findById(pfs.getProduct().getProductcode()).orElse(null) != null) {
+    		throw new DataRelatedException(ERROR_CODE.PRODUCT_ALREADY_EXIST, "Product with code: "+pfs.getProduct().getProductcode()+" is already exists.");
+    	}
+    	saveProducts(pfs);
+    	return pfs;
+    }
+
+    @PutMapping("/save")
+    public ProductsForShow editProducts(@RequestBody ProductsForShow pfs) {
+    	if(prodRepo.findById(pfs.getProduct().getProductcode()).orElse(null) == null) {
+    		throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND, "Product with code: "+pfs.getProduct().getProductcode()+" is not exists.");
+    	}
+    	saveProducts(pfs);
+    	return pfs;
     }
     
   
@@ -131,6 +130,8 @@ public class ProductsRestController {
 	  prodRepo.deleteById(productcode);
 	  return prodRepo.findById(productcode).orElse(null);
   }
+  
+
     
 }
     
