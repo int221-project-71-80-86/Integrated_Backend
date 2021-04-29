@@ -6,20 +6,33 @@
 
 package int221.project.models;
 
-import java.io.Serializable;
-
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 
 @Entity
 @IdClass(ProductColorsId.class)
 public class Productcolors
 {
-	@Id private String productcode ; // Id or Primary Key
-    @Id private int colorid ; // Id or Primary Key
+	@Id
+	private String productcode ; // Id or Primary Key
+	
+    @Id 
+    private int colorid ; // Id or Primary Key
 
+    @ManyToOne
+    @MapsId("productcode")
+    @JoinColumn(name = "productcode")
+    Products products;
+
+	@ManyToOne
+    @MapsId("colorid")
+    @JoinColumn(name = "colorid")
+    Colors colors;
+    
 //	@EmbeddedId
 //	private ProductColorsId productColors;
 
