@@ -6,58 +6,99 @@
 
 package int221.project.models;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
-@Entity
-@IdClass(ProductColorsId.class)
-public class Productcolors
-{
-	@Id
-	private String productcode ; // Id or Primary Key
-	
-    @Id 
-    private int colorid ; // Id or Primary Key
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-    @ManyToOne
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+//@IdClass(ProductColorsId.class)
+@JsonIgnoreProperties(value = {"productcolors"})
+public class Productcolors implements Comparable<Productcolors>
+{
+//	@Id
+//	private Integer productcode ; // Id or Primary Key
+//  @Id 
+//  private Integer colorid ; // Id or Primary Key
+	
+	@EmbeddedId
+	private ProductColorsId productcolors;
+
+    @ManyToOne(optional = false)
     @MapsId("productcode")
     @JoinColumn(name = "productcode")
+    @JsonBackReference
     Products products;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
     @MapsId("colorid")
     @JoinColumn(name = "colorid")
     Colors colors;
     
-//	@EmbeddedId
-//	private ProductColorsId productColors;
-
-//	public ProductColorsId getProductColors() {
-//		return productColors;
+//	public Productcolors() {
+//}
+//
+//	public Productcolors(Integer productcode, Integer colorid) {
+//	this.productcode = productcode;
+//	this.colorid = colorid;
+//}
+//
+//	public Integer getProductcode() {
+//		return productcode;
+//	}
+//
+//	public void setProductcode(Integer productcode) {
+//		this.productcode = productcode;
+//	}
+//
+//	public Integer getColorid() {
+//		return colorid;
+//	}
+//
+//	public void setColorid(Integer colorid) {
+//		this.colorid = colorid;
 //	}
 
-//	public void setProductColors(ProductColorsId id) {
-//		this.productColors = id;
-//	}
-	
-	public void setProductcode( String productcode ) {
-        this.productcode = productcode ;
-    }
+	public Products getProducts() {
+		return products;
+	}
 
-	public String getProductcode() {
-        return this.productcode;
-    }
+	public ProductColorsId getProductcolors() {
+		return productcolors;
+	}
 
-	public void setColorid( int colorid ) {
-        this.colorid = colorid ;
-    }
+	public void setProductcolors(ProductColorsId productcolors) {
+		this.productcolors = productcolors;
+	}
 
-	public int getColorid() {
-        return this.colorid;
-    }
+	public void setProducts(Products products) {
+		this.products = products;
+	}
+
+	public Colors getColors() {
+		return colors;
+	}
+
+	public void setColors(Colors colors) {
+		this.colors = colors;
+	}
+
+	@Override
+	public int compareTo(Productcolors o) {
+		return this.productcolors.getProductcode() - o.productcolors.getProductcode() ;
+	}
 
 }

@@ -7,21 +7,31 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class ProductColorsId implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "productcode")
-	private String productcode;
+	private Integer productcode;
 	@Column(name = "colorid")
-	private int colorid;
+	private Integer colorid;
 	
-	public String getProductcode() {
+	public ProductColorsId() {
+	}
+	
+	public ProductColorsId(Integer productcode, Integer colorid) {
+		this.productcode = productcode;
+		this.colorid = colorid;
+	}
+	public Integer getProductcode() {
 		return productcode;
 	}
-	public void setProductcode(String productcode) {
+	public void setProductcode(Integer productcode) {
 		this.productcode = productcode;
 	}
-	public int getColorid() {
+	public Integer getColorid() {
 		return colorid;
 	}
-	public void setColorid(int colorid) {
+	public void setColorid(Integer colorid) {
 		this.colorid = colorid;
 	}
 	
@@ -30,7 +40,7 @@ public class ProductColorsId implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + colorid;
-		result = prime * result + ((productcode == null) ? 0 : productcode.hashCode());
+		result = prime * result + productcode;
 		return result;
 	}
 	@Override
@@ -44,14 +54,10 @@ public class ProductColorsId implements Serializable{
 		ProductColorsId other = (ProductColorsId) obj;
 		if (colorid != other.colorid)
 			return false;
-		if (productcode == null) {
-			if (other.productcode != null)
-				return false;
-		} else if (!productcode.equals(other.productcode))
+		if (productcode != other.productcode)
 			return false;
 		return true;
 	}
-	
-	
+
 	
 }
