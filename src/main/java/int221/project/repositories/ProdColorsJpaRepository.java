@@ -9,20 +9,17 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import int221.project.models.Colors;
+import int221.project.models.ProductColorsId;
 import int221.project.models.Productcolors;
 
-public interface ProdColorsJpaRepository extends JpaRepository<Productcolors, String>{
-
-	/* error: mapping try fixing or change method */
-//	@Query("SELECT c FROM productcolors pc JOIN colors c ON pc.colorid = c.colorid WHERE pc.productcode = ?1")
-//	List<Colors> findColorsByProductCode(String productCode);
-	
-	@Query("SELECT pc.colorid FROM Productcolors pc WHERE productcode = ?1")
-	List<Integer> findColorsByProductCode(String productCode);
+public interface ProdColorsJpaRepository extends JpaRepository<Productcolors, ProductColorsId>{
 
 	@Transactional
 	@Modifying
-	@Query("DELETE FROM Productcolors pc WHERE productcode = ?1")
-	void deleteProductByProductcode(String productCode);
+	@Query("DELETE FROM Productcolors pc WHERE pc.productcolors.productcode = ?1")
+	void deleteProductByProductcode(Integer productCode);
+	
+	@Query("SELECT pc FROM Productcolors pc WHERE pc.productcolors.productcode = ?1")
+	List<Productcolors> findProductcolorsByProductcode(Integer productCode);
 	
 }
