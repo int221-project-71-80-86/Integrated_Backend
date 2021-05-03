@@ -77,20 +77,8 @@ public class ProductsRestController {
 		return prodRepo.save(product);
 	}
 
-	@PutMapping("/edit")
-	public Products editProducts(@RequestBody Products products) {
-		if (prodRepo.findById(products.getProductcode()).orElse(null) == null) {
-			throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND,
-					"Product with code: " + products.getProductcode() + " does not exists.");
-		}
-		checkColors(products);
-		addPrimaryKey(products);
-		resetProductcode(products.getProductcode());
-		return prodRepo.save(products);
-	}
-	
-//	@PutMapping("/edit/v2")
-//	public Products editProductsV2(@RequestBody Products products) {
+//	@PutMapping("/edit")
+//	public Products editProducts(@RequestBody Products products) {
 //		if (prodRepo.findById(products.getProductcode()).orElse(null) == null) {
 //			throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND,
 //					"Product with code: " + products.getProductcode() + " does not exists.");
@@ -100,6 +88,29 @@ public class ProductsRestController {
 //		resetProductcode(products.getProductcode());
 //		return prodRepo.save(products);
 //	}
+	
+	@PutMapping(value = "/edit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	public Products editProductsV2(@RequestParam(value = "file", required = false)MultipartFile photo, 
+			@RequestPart Products product) {
+		Products oldProd = prodRepo.findById(product.getProductcode()).orElse(null);
+		if (oldProd == null) {
+			throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND,
+					"Product with code: " + product.getProductcode() + " does not exists.");
+		}
+		// If send photo. delete old and add new. If not just use old.
+		if(photo != null) {
+			storeService.deleteOne(oldProd.getImage());
+			String photoname = storeService.save(photo);
+			product.setImage(photoname);
+		} else {
+			product.setImage(oldProd.getImage());
+		}
+		// Check and save
+		checkColors(product);
+		addPrimaryKey(product);
+		resetProductcode(product.getProductcode());
+		return prodRepo.save(product);
+	}
 
 	private void resetProductcode(Integer productcode) {
 		pcRepo.deleteProductByProductcode(productcode);
