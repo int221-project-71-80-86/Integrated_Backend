@@ -35,8 +35,8 @@ public class FilesController {
 	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
 	    String message = "";
 	    try {
-	      storeService.save(file);
-	      message = "Uploaded the file successfully: " + file.getOriginalFilename();
+	      String filename = storeService.save(file);
+	      message = "Uploaded the file successfully: " + filename;
 	      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 	    } catch (Exception e) {
 	      message = "Could not upload the file: " + file.getOriginalFilename() + "!";
@@ -57,8 +57,8 @@ public class FilesController {
 	    return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
 	  }
 
-	@GetMapping(value = "/files/{filename:.+}", produces = MediaType.IMAGE_JPEG_VALUE)
-//	@GetMapping(value = "/files/{filename:.+}")
+//	@GetMapping(value = "/files/{filename:.+}", produces = MediaType.IMAGE_JPEG_VALUE)
+	@GetMapping(value = "/files/{filename:.+}")
 	  @ResponseBody
 	  public ResponseEntity<Resource> getFile(@PathVariable String filename) {
 //		public Resource getFile(@PathVariable String filename) {
