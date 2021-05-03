@@ -15,12 +15,14 @@ import int221.project.models.Products;
 import int221.project.repositories.ColorsJpaRepositories;
 import int221.project.repositories.ProdColorsJpaRepository;
 import int221.project.repositories.ProductsJpaRepository;
+import int221.project.services.FileStoreServices;
 
 @RestController
 public class TestRestController {
 	@Autowired ProductsJpaRepository prodRepo;
 	@Autowired ProdColorsJpaRepository pcRepo;
 	@Autowired ColorsJpaRepositories colorRepo;
+	@Autowired FileStoreServices storeService;
 	
 	@GetMapping("/pc")
 	public List<Productcolors> testMapping2() {
@@ -31,5 +33,10 @@ public class TestRestController {
 	public List<Productcolors> testMapping3(@PathVariable Integer a) {
 		return pcRepo.findProductcolorsByProductcode(a);
 	}
+	
+//	@GetMapping("/test")
+//	public String test1() {
+//		return storeService.generateRandomString();
+//	}
 
 }

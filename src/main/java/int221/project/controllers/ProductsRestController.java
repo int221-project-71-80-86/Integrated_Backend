@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,22 +12,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import int221.project.exceptions.DataRelatedException;
 import int221.project.exceptions.ExceptionResponse.ERROR_CODE;
 import int221.project.models.*;
 import int221.project.repositories.*;
+import int221.project.services.FileStoreServices;
 
 @RestController
 public class ProductsRestController {
 
-	@Autowired
-	ProductsJpaRepository prodRepo;
-	@Autowired
-	ProdColorsJpaRepository pcRepo;
-	@Autowired
-	ColorsJpaRepositories colorRepo;
+	@Autowired ProductsJpaRepository prodRepo;
+	@Autowired ProdColorsJpaRepository pcRepo;
+	@Autowired ColorsJpaRepositories colorRepo;
+	@Autowired FileStoreServices storeService;
 
 	/**************
 	 * Get Method *
@@ -56,12 +58,19 @@ public class ProductsRestController {
 	 * Post&Put Method *
 	 *******************/
 
-	@PostMapping("/save")
-	public Products addProducts(@RequestBody Products product) {
-//		if (prodRepo.findProductByProductName(product.getName()) != null) {
-//			throw new DataRelatedException(ERROR_CODE.PRODUCT_ALREADY_EXIST,
-//					"Already have product with same name: " + product.getName());
-//		}
+//	@PostMapping("/save")
+//	public Products addProducts(@RequestBody Products product) {
+//		checkColors(product);
+//		product.setProductcode(0);
+//		addPrimaryKey(product);
+//		return prodRepo.save(product);
+//	}
+	
+	@PostMapping(value = "/save", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	public Products addProductsV2(@RequestParam(value = "file", required = true)MultipartFile photo, 
+									@RequestPart Products product) {
+		String filename = storeService.save(photo);
+		product.setImage(filename);
 		checkColors(product);
 		product.setProductcode(0);
 		addPrimaryKey(product);
@@ -79,6 +88,18 @@ public class ProductsRestController {
 		resetProductcode(products.getProductcode());
 		return prodRepo.save(products);
 	}
+	
+//	@PutMapping("/edit/v2")
+//	public Products editProductsV2(@RequestBody Products products) {
+//		if (prodRepo.findById(products.getProductcode()).orElse(null) == null) {
+//			throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND,
+//					"Product with code: " + products.getProductcode() + " does not exists.");
+//		}
+//		checkColors(products);
+//		addPrimaryKey(products);
+//		resetProductcode(products.getProductcode());
+//		return prodRepo.save(products);
+//	}
 
 	private void resetProductcode(Integer productcode) {
 		pcRepo.deleteProductByProductcode(productcode);
