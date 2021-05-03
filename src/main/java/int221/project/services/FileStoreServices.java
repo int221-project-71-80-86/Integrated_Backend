@@ -16,6 +16,8 @@ public interface FileStoreServices {
 	
 	public void deleteAll();
 	
+	public void deleteOne(String filename);
+	
 	public Stream<Path> loadAll();
 	
 	public String generateRandomString(MultipartFile file);

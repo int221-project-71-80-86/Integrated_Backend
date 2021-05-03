@@ -42,7 +42,7 @@ public class FileStore implements FileStoreServices {
 		try {
 			String filename = generateRandomString(file);
 			Files.copy(file.getInputStream(), this.root.resolve(filename));
-			System.out.println("Succesfully save file with filename: "+filename);
+//			System.out.println("Succesfully save file with filename: "+filename); // For Testing
 			return filename;
 		} catch (Exception e) {
 			throw new RuntimeException("Could not store file. Error: "+e.getMessage());
@@ -74,6 +74,15 @@ public class FileStore implements FileStoreServices {
 	@Override
 	public void deleteAll() {
 		FileSystemUtils.deleteRecursively(root.toFile());
+	}
+	
+	@Override
+	public void deleteOne(String filename) {
+		try {
+			FileSystemUtils.deleteRecursively(root.resolve(filename));
+		} catch (IOException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
 	}
 
 	@Override
