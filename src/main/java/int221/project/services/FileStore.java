@@ -5,10 +5,12 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileStore implements FileStoreServices {
 	
-	private final Path root = Paths.get("uploads");
+	private final Path root;
+	
+	 public FileStore(@Value("${project.upload-path}")String path) {
+		root = Paths.get(path);
+	}
 
 	@Override
 	@PostConstruct
@@ -32,13 +38,21 @@ public class FileStore implements FileStoreServices {
 	}
 
 	@Override
-	public void save(MultipartFile file) {
+	public String save(MultipartFile file) {
 		try {
-			Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+			String filename = generateRandomString(file);
+			Files.copy(file.getInputStream(), this.root.resolve(filename));
+			System.out.println("Succesfully save file with filename: "+filename);
+			return filename;
 		} catch (Exception e) {
 			throw new RuntimeException("Could not store file. Error: "+e.getMessage());
 		}
-
+	}
+	
+	@Override
+	public String generateRandomString(MultipartFile file) {
+		String uuid = UUID.randomUUID().toString().replaceAll("-", "").substring(0,12);
+		return uuid+"-"+file.getOriginalFilename();
 	}
 
 	@Override
