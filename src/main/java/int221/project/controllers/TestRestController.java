@@ -19,7 +19,7 @@ import int221.project.repositories.ProductsJpaRepository;
 import int221.project.services.FileStoreServices;
 
 @RestController
-@CrossOrigin("http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 public class TestRestController {
 	@Autowired ProductsJpaRepository prodRepo;
 	@Autowired ProdColorsJpaRepository pcRepo;

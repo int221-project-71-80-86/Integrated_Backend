@@ -98,7 +98,7 @@ public class Productcolors implements Comparable<Productcolors>
 
 	@Override
 	public int compareTo(Productcolors o) {
-		return this.productcolors.getProductcode() - o.productcolors.getProductcode() ;
+		return this.productcolors.getColorid() - o.productcolors.getColorid() ;
 	}
 
 }

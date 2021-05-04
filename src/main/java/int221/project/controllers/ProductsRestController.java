@@ -24,7 +24,7 @@ import int221.project.repositories.*;
 import int221.project.services.FileStoreServices;
 
 @RestController
-@CrossOrigin("http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 public class ProductsRestController {
 
 	@Autowired ProductsJpaRepository prodRepo;
@@ -47,7 +47,7 @@ public class ProductsRestController {
 
 	@GetMapping("/products")
 	public Page<Products> showAllImplementsPaging(@RequestParam(defaultValue = "0") int pageNo,
-			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "productcode") String sortBy) {
+			@RequestParam(defaultValue = "4") int size, @RequestParam(defaultValue = "productcode") String sortBy) {
 		return prodRepo.findAll(PageRequest.of(pageNo, size, Sort.by(sortBy)));
 	}
 

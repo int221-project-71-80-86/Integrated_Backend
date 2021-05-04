@@ -11,7 +11,7 @@ import int221.project.models.Colors;
 import int221.project.repositories.ColorsJpaRepositories;
 
 @RestController
-@CrossOrigin("http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 public class ColorsRestController {
 
 	@Autowired ColorsJpaRepositories colorRepo;
