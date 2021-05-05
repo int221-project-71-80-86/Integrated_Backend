@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -138,7 +137,11 @@ public class ProductsRestController {
 	@DeleteMapping("/delete/{productcode}")
 	public Products removeProducts(@PathVariable Integer productcode) {
 		Products delProd = prodRepo.findById(productcode).orElse(null);
+		if(delProd == null) {
+			throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND, "Cannot find product with productcode: "+productcode);
+		}
 		prodRepo.deleteById(productcode);
+		storeService.deleteOne(delProd.getImage());
 		return delProd;
 	}
 
