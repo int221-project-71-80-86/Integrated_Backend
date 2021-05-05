@@ -34,6 +34,7 @@ public class ProductsRestController {
 	/**************
 	 * Get Method *
 	 **************/
+	// Get one product //
 	@GetMapping("/products/{code}")
 	public Products show(@PathVariable int code) {
 		Products p = prodRepo.findById(code).orElse(null);
@@ -44,12 +45,14 @@ public class ProductsRestController {
 		return p;
 	}
 
+	// Get All Product with Paging Implemented //
 	@GetMapping("/products")
 	public Page<Products> showAllImplementsPaging(@RequestParam(defaultValue = "0") int pageNo,
 			@RequestParam(defaultValue = "4") int size, @RequestParam(defaultValue = "productcode") String sortBy) {
 		return prodRepo.findAll(PageRequest.of(pageNo, size, Sort.by(sortBy)));
 	}
 
+	// Get All Product Old Code (Paging Not Implemented) //
 //	@GetMapping("/products")
 //	public List<Products> showAll() {
 //		return prodRepo.findAll();
@@ -59,37 +62,17 @@ public class ProductsRestController {
 	 * Post&Put Method *
 	 *******************/
 
-//	@PostMapping("/save")
-//	public Products addProducts(@RequestBody Products product) {
-//		checkColors(product);
-//		product.setProductcode(0);
-//		addPrimaryKey(product);
-//		return prodRepo.save(product);
-//	}
-	
 	@PostMapping(value = "/save", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	public Products addProductsV2(@RequestParam(value = "file", required = true)MultipartFile photo, 
 									@RequestPart Products product) {
-		String filename = storeService.save(photo);
-		product.setImage(filename);
+		String filename = storeService.save(photo); // Store photo and get randomize filename.
+		product.setImage(filename); // set randomized filename to product.
 		checkColors(product);
 		product.setProductcode(0);
 		addPrimaryKey(product);
 		return prodRepo.save(product);
 	}
 
-//	@PutMapping("/edit")
-//	public Products editProducts(@RequestBody Products products) {
-//		if (prodRepo.findById(products.getProductcode()).orElse(null) == null) {
-//			throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND,
-//					"Product with code: " + products.getProductcode() + " does not exists.");
-//		}
-//		checkColors(products);
-//		addPrimaryKey(products);
-//		resetProductcode(products.getProductcode());
-//		return prodRepo.save(products);
-//	}
-	
 	@PutMapping(value = "/edit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	public Products editProductsV2(@RequestParam(value = "file", required = false)MultipartFile photo, 
 			@RequestPart Products product) {
@@ -113,10 +96,12 @@ public class ProductsRestController {
 		return prodRepo.save(product);
 	}
 
+	// Delete All ProductColors of Products Before Saving new One
 	private void resetProductcode(Integer productcode) {
 		pcRepo.deleteProductByProductcode(productcode);
 	}
 
+	// Add Primary key for ProductColors in Product.
 	private void addPrimaryKey(Products product) {
 		for (Productcolors p : product.getProductcolors()) {
 			p.setProductcolors(new ProductColorsId(product.getProductcode(), p.getColors().getColorid()));
@@ -124,6 +109,7 @@ public class ProductsRestController {
 		}
 	}
 	
+	// Check if Request Product has at least one Colors.
 	private void checkColors(Products product) {
 		if (product.getProductcolors().isEmpty()) {
 			throw new DataRelatedException(ERROR_CODE.COLOR_DOESNT_FOUND, "Product does not contain any color!");
@@ -137,6 +123,7 @@ public class ProductsRestController {
 	@DeleteMapping("/delete/{productcode}")
 	public Products removeProducts(@PathVariable Integer productcode) {
 		Products delProd = prodRepo.findById(productcode).orElse(null);
+		// Check if product is null then throw an exception.
 		if(delProd == null) {
 			throw new DataRelatedException(ERROR_CODE.PRODUCT_DOESNT_FOUND, "Cannot find product with productcode: "+productcode);
 		}

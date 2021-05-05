@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import int221.project.models.Colors;
 import int221.project.models.ProductColorsId;
 import int221.project.models.Productcolors;
 
