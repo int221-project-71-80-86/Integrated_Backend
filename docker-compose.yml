@@ -1,0 +1,6 @@
+services:
+  backend:
+    build: .
+    image: backend:latest
+    ports:
+      - "8083:8083"
