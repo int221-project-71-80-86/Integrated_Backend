@@ -23,7 +23,7 @@ import int221.project.files.ResponseMessage;
 import int221.project.services.FileStoreServices;
 
 @Controller
-//@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://172.23.0.1:8080")
 public class FilesController {
 
 	@Autowired
