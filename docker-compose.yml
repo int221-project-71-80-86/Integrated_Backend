@@ -1,6 +1,14 @@
 services:
+  networks:
+    test:
+      external:
+        name: testNetwork2
   backend:
     build: .
     image: backend:latest
     ports:
       - "8083:8083"
+    web:
+    networks:
+      test:
+        ipv4_address: 10.5.0.11
