@@ -6,7 +6,7 @@ services:
       - "8083:8083"
     networks:
       test:
-        ipv4_address: 172.23.2.2
+        ipv4_address: 172.23.20.2
 networks:
   test:
     external:
