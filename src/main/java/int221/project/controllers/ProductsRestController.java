@@ -23,7 +23,7 @@ import int221.project.repositories.*;
 import int221.project.services.FileStoreServices;
 
 @RestController
-@CrossOrigin(origins = "http://172.23.0.1:8080")
+@CrossOrigin(origins = "http://172.23.1.1:8080")
 public class ProductsRestController {
 
 	@Autowired ProductsJpaRepository prodRepo;
