@@ -11,7 +11,7 @@ import int221.project.models.Brands;
 import int221.project.repositories.BrandsJpaRepositories;
 
 @RestController
-@CrossOrigin(origins = "http://172.23.10.1:8080")
+@CrossOrigin(origins = "http://52.148.79.33:8080")
 public class BrandsRestController {
 	
 	@Autowired BrandsJpaRepositories brandRepo;
