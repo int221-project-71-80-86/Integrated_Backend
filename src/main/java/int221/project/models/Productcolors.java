@@ -6,14 +6,8 @@
 
 package int221.project.models;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -21,18 +15,10 @@ import javax.persistence.MapsId;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Entity
-//@IdClass(ProductColorsId.class)
 @JsonIgnoreProperties(value = {"productcolors"})
 public class Productcolors implements Comparable<Productcolors>
 {
-//	@Id
-//	private Integer productcode ; // Id or Primary Key
-//  @Id 
-//  private Integer colorid ; // Id or Primary Key
 	
 	@EmbeddedId
 	private ProductColorsId productcolors;
@@ -48,30 +34,6 @@ public class Productcolors implements Comparable<Productcolors>
     @JoinColumn(name = "colorid")
     Colors colors;
     
-//	public Productcolors() {
-//}
-//
-//	public Productcolors(Integer productcode, Integer colorid) {
-//	this.productcode = productcode;
-//	this.colorid = colorid;
-//}
-//
-//	public Integer getProductcode() {
-//		return productcode;
-//	}
-//
-//	public void setProductcode(Integer productcode) {
-//		this.productcode = productcode;
-//	}
-//
-//	public Integer getColorid() {
-//		return colorid;
-//	}
-//
-//	public void setColorid(Integer colorid) {
-//		this.colorid = colorid;
-//	}
-
 	public Products getProducts() {
 		return products;
 	}
