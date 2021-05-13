@@ -1,12 +1,42 @@
 services:
+  mysql:
+    image: mysql/mysql-server:8.0.24
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - type: bind
+        source: /home/int221/mysql/config/my.cnf
+        target: /etc/my.cnf
+      - type: bind
+        source: /home/int221/mysql/lib/
+        target: /var/lib/mysql
+    networks:
+      test:
+        ipv4_address: 172.23.30.3
   backend:
-    build: .
+    build: ./Integrated_Backend
     image: backend:latest
     ports:
       - "8083:8083"
+    restart: on-failure
+    depends_on:
+      - mysql
     networks:
       test:
         ipv4_address: 172.23.20.2
+  frontend:
+      build: ./Integrated_Frontend
+      image: frontend
+      ports:
+        - "8080:8080"
+      depends_on:
+        - backend
+      networks:
+        test:
+          ipv4_address: 172.23.10.1
 networks:
   test:
     external:
